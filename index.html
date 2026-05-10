@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#ffb6d9" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Will You Be My Girlfriend? 💕</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh; /* better mobile viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Comic Sans MS', 'Segoe UI', cursive, sans-serif;
+    background: linear-gradient(135deg, #ffb6d9 0%, #ffd3e1 50%, #fff0f5 100%);
+    position: relative;
+    padding: 20px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Floating hearts background */
+  .heart-bg {
+    position: fixed;
+    font-size: 24px;
+    opacity: 0.6;
+    animation: floatUp linear infinite;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(100vh) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 0.8; }
+    90%  { opacity: 0.8; }
+    100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+  }
+
+  .card {
+    background: #fff;
+    padding: 40px 40px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.35);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    border: 3px dashed #ff6fa8;
+  }
+
+  h1 {
+    font-size: clamp(1.6rem, 6vw, 2.5rem);
+    color: #d6336c;
+    margin-bottom: 10px;
+    animation: wiggle 2s ease-in-out infinite;
+    line-height: 1.2;
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-2deg); }
+    50%      { transform: rotate(2deg); }
+  }
+
+  .emoji {
+    font-size: clamp(3rem, 10vw, 4rem);
+    display: block;
+    margin: 10px 0 20px;
+    animation: beat 1s ease-in-out infinite;
+  }
+
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.2); }
+  }
+
+  p.sub {
+    color: #8a4a6b;
+    font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+    margin-bottom: 30px;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: 70px;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    font-weight: bold;
+    padding: 15px 35px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, left 0.2s ease, top 0.2s ease;
+    touch-action: manipulation;
+  }
+
+  .yes-btn {
+    background: linear-gradient(135deg, #ff4d94, #ff80b0);
+    color: white;
+    box-shadow: 0 6px 20px rgba(255, 77, 148, 0.5);
+  }
+
+  .yes-btn:hover, .yes-btn:active {
+    transform: scale(1.15);
+    box-shadow: 0 10px 30px rgba(255, 77, 148, 0.7);
+  }
+
+  .no-btn {
+    background: #eee;
+    color: #999;
+    position: relative;
+  }
+
+  /* Success screen */
+  .success {
+    display: none;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .success.show { display: block; }
+  .card.hide    { display: none; }
+
+  .success h1 {
+    font-size: clamp(1.8rem, 7vw, 3rem);
+    color: #d6336c;
+  }
+
+  .big-heart {
+    font-size: clamp(5rem, 20vw, 8rem);
+    animation: beat 0.8s ease-in-out infinite;
+    display: block;
+  }
+
+  .confetti {
+    position: fixed;
+    font-size: 20px;
+    pointer-events: none;
+    animation: confettiFall 3s linear forwards;
+    will-change: transform;
+  }
+
+  /* Music toggle */
+  .music-toggle {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(8px);
+    border: 2px solid #ff6fa8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(255,105,180,0.3);
+    transition: transform 0.15s ease;
+    padding: 0;
+  }
+  .music-toggle:hover, .music-toggle:active {
+    transform: scale(1.1) rotate(10deg);
+  }
+
+  @keyframes confettiFall {
+    0%   { transform: translateY(-10vh) rotate(0deg);   opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Small phone tweaks */
+  @media (max-width: 480px) {
+    .card { padding: 30px 20px; border-radius: 25px; }
+    button { padding: 13px 25px; }
+    .buttons { gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="music-toggle" id="musicToggle" type="button" aria-label="Toggle music">🔇</button>
+
+<div class="card" id="mainCard">
+  <span class="emoji">🥺</span>
+  <h1>Will you be my girlfriend?</h1>
+  <p class="sub">I promise I'll share my ice cream 🍦</p>
+
+  <div class="buttons">
+    <button class="yes-btn" id="yesBtn" type="button">Yes! 💕</button>
+    <button class="no-btn" id="noBtn" type="button">No 😢</button>
+  </div>
+</div>
+
+<div class="success" id="successScreen">
+  <span class="big-heart">💖</span>
+  <h1>YAYYY! You made me the happiest! 🥳</h1>
+  <p class="sub" style="margin-top:20px;font-size:clamp(1rem,4vw,1.3rem);">I knew you'd say yes 😘</p>
+</div>
+
+<script>
+  const noBtn     = document.getElementById('noBtn');
+  const yesBtn    = document.getElementById('yesBtn');
+  const mainCard  = document.getElementById('mainCard');
+  const successEl = document.getElementById('successScreen');
+
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+  // Rotating taunts
+  const noMessages = [
+    'No 😢',
+    'Are you sure? 🥺',
+    'Really? 💔',
+    'Think again! 🤔',
+    'Please? 😭',
+    'Last chance! 😩',
+    'You break my heart 💔',
+    "I'll cry 🥲",
+    'Come onnnn 🙏',
+    'Pretty please? 🌸',
+    'Catch me first! 🏃‍♀️',
+    'Nope nope nope 🙅',
+    'Try again! 😜'
+  ];
+  let dodgeCount = 0;
+
+  // Move the No button to a random spot that stays on-screen
+  function moveNoButton(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Measure current button size first so it never goes off-screen
+    const rect   = noBtn.getBoundingClientRect();
+    const w      = rect.width  || noBtn.offsetWidth;
+    const h      = rect.height || noBtn.offsetHeight;
+    const margin = 10;
+
+    const maxX = Math.max(margin, window.innerWidth  - w - margin);
+    const maxY = Math.max(margin, window.innerHeight - h - margin);
+
+    const x = Math.floor(margin + Math.random() * (maxX - margin));
+    const y = Math.floor(margin + Math.random() * (maxY - margin));
+
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = x + 'px';
+    noBtn.style.top  = y + 'px';
+    noBtn.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
+
+    // Rotate taunt text
+    noMessages.push(noMessages.shift());
+    noBtn.textContent = noMessages[0];
+
+    // Shrink No & grow Yes very gently, with sensible caps
+    dodgeCount++;
+    const noScale  = Math.max(0.8, 1 - dodgeCount * 0.015);
+    const yesScale = Math.min(1.2, 1 + dodgeCount * 0.015);
+    noBtn.style.fontSize  = (1.1 * noScale) + 'rem';
+    yesBtn.style.transform = `scale(${yesScale})`;
+
+    // Tiny vibration on supported phones (feels magical)
+    if (navigator.vibrate) navigator.vibrate(15);
+  }
+
+  // Desktop: dodge on hover (before the click even lands)
+  noBtn.addEventListener('mouseover', moveNoButton);
+  noBtn.addEventListener('mouseenter', moveNoButton);
+
+  // Mobile: dodge on pointerdown/touchstart BEFORE the tap registers
+  noBtn.addEventListener('pointerdown', moveNoButton, { passive: false });
+  noBtn.addEventListener('touchstart',  moveNoButton, { passive: false });
+
+  // Just in case anything sneaks through, swallow the click
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    moveNoButton(e);
+  });
+
+  // Focus dodge (keyboard users, no cheating)
+  noBtn.addEventListener('focus', moveNoButton);
+
+  // Yes = celebrate
+  function sayYes() {
+    playYesChime();
+    mainCard.classList.add('hide');
+    successEl.classList.add('show');
+    launchConfetti();
+    if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 120]);
+  }
+  yesBtn.addEventListener('click', sayYes);
+
+  // Floating hearts background
+  function spawnHeart() {
+    const hearts = ['💕', '💖', '💗', '💘', '💓', '❤️', '🌸', '✨'];
+    const h = document.createElement('div');
+    h.className = 'heart-bg';
+    h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    h.style.left = Math.random() * 100 + 'vw';
+    h.style.fontSize = (16 + Math.random() * 24) + 'px';
+    h.style.animationDuration = (4 + Math.random() * 5) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 9000);
+  }
+  // Fewer hearts on mobile to keep it smooth
+  setInterval(spawnHeart, isTouch ? 650 : 400);
+
+  // Confetti on success
+  function launchConfetti() {
+    const emojis = ['🎉', '🎊', '💖', '✨', '🌟', '💕', '🥳'];
+    const count = isTouch ? 50 : 80;
+    for (let i = 0; i < count; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.fontSize = (20 + Math.random() * 20) + 'px';
+      c.style.animationDelay = (Math.random() * 1.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5000);
+    }
+  }
+
+  // ---------------- Cute melody (Web Audio) ----------------
+  // Plays a soft, looping lullaby-ish tune. Muted by default;
+  // she taps the 🔇 button to turn it on (browsers require a user gesture).
+  const musicBtn = document.getElementById('musicToggle');
+  let audioCtx = null;
+  let musicOn  = false;
+  let melodyTimer = null;
+
+  // Simple cute melody — Twinkle-ish intro then a sweet hook. Notes in Hz.
+  const C5=523.25, D5=587.33, E5=659.25, F5=698.46, G5=783.99, A5=880.00, B5=987.77, C6=1046.50;
+  const melody = [
+    [C5,0.35],[C5,0.35],[G5,0.35],[G5,0.35],[A5,0.35],[A5,0.35],[G5,0.7],
+    [F5,0.35],[F5,0.35],[E5,0.35],[E5,0.35],[D5,0.35],[D5,0.35],[C5,0.7],
+    [G5,0.35],[G5,0.35],[F5,0.35],[F5,0.35],[E5,0.35],[E5,0.35],[D5,0.7],
+    [G5,0.35],[G5,0.35],[F5,0.35],[F5,0.35],[E5,0.35],[E5,0.35],[D5,0.7],
+    [C5,0.35],[C5,0.35],[G5,0.35],[G5,0.35],[A5,0.35],[A5,0.35],[G5,0.7],
+    [F5,0.35],[F5,0.35],[E5,0.35],[E5,0.35],[D5,0.35],[D5,0.35],[C5,1.0]
+  ];
+
+  function playNote(freq, startAt, duration) {
+    const osc  = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+
+    // Soft attack/release envelope — feels like a music box
+    const peak = 0.12;
+    gain.gain.setValueAtTime(0, startAt);
+    gain.gain.linearRampToValueAtTime(peak, startAt + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, startAt + duration);
+
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(startAt);
+    osc.stop(startAt + duration + 0.05);
+  }
+
+  function scheduleMelody() {
+    if (!musicOn) return;
+    let t = audioCtx.currentTime + 0.1;
+    for (const [freq, dur] of melody) {
+      playNote(freq, t, dur * 0.9);
+      t += dur;
+    }
+    const totalMs = melody.reduce((s, [, d]) => s + d, 0) * 1000;
+    melodyTimer = setTimeout(scheduleMelody, totalMs);
+  }
+
+  function startMusic() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    musicOn = true;
+    musicBtn.textContent = '🎵';
+    scheduleMelody();
+  }
+  function stopMusic() {
+    musicOn = false;
+    musicBtn.textContent = '🔇';
+    if (melodyTimer) clearTimeout(melodyTimer);
+    if (audioCtx) audioCtx.suspend();
+  }
+  musicBtn.addEventListener('click', () => {
+    if (musicOn) stopMusic(); else startMusic();
+  });
+
+  // Little happy chime when she says yes
+  function playYesChime() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const notes = [C5, E5, G5, C6];
+      let t = audioCtx.currentTime;
+      notes.forEach((n, i) => playNote(n, t + i * 0.12, 0.3));
+    } catch (e) { /* ignore */ }
+  }
+
+  // Keep the No button inside viewport if the window/orientation changes
+  window.addEventListener('resize', () => {
+    if (noBtn.style.position === 'fixed') {
+      const rect = noBtn.getBoundingClientRect();
+      const maxX = window.innerWidth  - rect.width  - 10;
+      const maxY = window.innerHeight - rect.height - 10;
+      if (rect.left > maxX) noBtn.style.left = maxX + 'px';
+      if (rect.top  > maxY) noBtn.style.top  = maxY + 'px';
+    }
+  });
+</script>
+</body>
+</html>
